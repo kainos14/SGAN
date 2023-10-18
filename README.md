@@ -19,7 +19,7 @@
 Please cite our paper if you find this repo useful in your work:
 
 ```
-@InProceedings{pmlr-v202-li23s,
+@In journal{,
   title = 	 {A Human Activity Recognition Method Based on Lightweight Feature Extraction Combined with Pruned and Quantized CNN for Wearable Devices},
   author =       {Myung-Kyu Yi and Seong-Oun Hwang},
   booktitle = 	 {},
