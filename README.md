@@ -10,9 +10,9 @@
 ---
 ## Codebase Overview
 - We implement our proposed HAR into the same framework. We note that:
-  - ''Data-driven_Feature_Extraction'' for our proposed data-feaute extaction technique.
-  - ''Data-refinement'' for our proposed data refinement technique.
-  - ''_main_baselines.py_'' for baseline SGAN model. 
+  - <Data-driven_Feature_Extraction.ipynb> for our proposed data-feaute extaction technique.
+  - <Data-refinement.ipynb> for our proposed data refinement technique.
+  - <SGAN.ipynb> for baseline SGAN model. 
   
 ## Citing This Repository
 
