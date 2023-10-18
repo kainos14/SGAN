@@ -1,7 +1,7 @@
 # 
 
 
->**This is the official implementation of the paper submitted IEEE Sensors Journal "[A Data-driven Feature Extraction Method Based on Data Supplement for Human Activity Recognition]".**
+>**This is the official implementation of the paper with the title “A Human Activity Recognition Method Based on Lightweight Feature Extraction Combined with Pruned and Quantized CNN for Wearable Devices” by Myung-Kyu Yi and Seong-Oun Hwang.**
 
 ## Paper Overview
 
