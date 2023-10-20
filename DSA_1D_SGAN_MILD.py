@@ -204,9 +204,7 @@ def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n
 	# select supervised dataset
 	X_sup, y_sup = select_supervised_samples(dataset)
 	print("Select supervised dataset: ", X_sup.shape, y_sup.shape)
-    
-	#print("Select extended supervised dataset: ", X_sup2.shape, y_sup2.shape)
-    
+	
 	# calculate the number of batches per training epoch
 	bat_per_epo = int(dataset[0].shape[0] / n_batch)
     
@@ -240,7 +238,6 @@ def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n
 			g_supervised_losses.append(g_loss)
 			c_accuray.append(c_acc)
 			iteration_checkpoints.append(i+1)            
-
 
 #accuracy list for each epochs
 acc_list = []
