@@ -3,15 +3,11 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from scipy.stats import skew
 import os
 import csv
-import pandas as pd
 from tqdm import tqdm
 import math
 import numpy as np
-
-import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn import preprocessing
-
 from numpy import expand_dims
 from numpy import zeros
 from numpy import ones
@@ -33,14 +29,15 @@ from keras.layers import Lambda
 from keras.layers import Activation
 from matplotlib import pyplot
 from keras import backend
-
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import scale
 import tensorflow as tf
-import pandas as pd
-import numpy as np
 import glob
 import os
 from tensorflow.keras.utils import to_categorical
-
 
 features = pd.read_csv("F:/HAR/DSADS/features.csv", index_col = 0)
 
@@ -57,7 +54,7 @@ f_col_all = ['T_xacc_mean', 'T_xacc_max', 'T_xacc_min','T_xacc_var',
        'T_ymag_var', 'T_ymag_std', 'T_ymag_skew', 'T_zmag_mean', 'T_zmag_max',
        'T_zmag_min', 'T_zmag_var', 'T_zmag_std', 'T_zmag_skew']       
 
-X = new_features[f_col_all]  # all features
+X = features[f_col_all]  # all features
 
 X_OneHotEncoded = pd.get_dummies(X)  # all features and OneHotEncoded
 f_col_OHE = list(X_OneHotEncoded.columns.values)
@@ -65,23 +62,6 @@ f_col_OHE = list(X_OneHotEncoded.columns.values)
 y = new_features["ActivityEncoded"].apply(lambda x: 1 if x== "Yes" else 0 )  # Labels
 y = new_features["ActivityEncoded"]
 print(X_OneHotEncoded.head())
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import scale
-
-
-import numpy as np
-import pandas as pd
-
-import numpy as np
-from sklearn.model_selection import train_test_split
-
 
 X_train, X_test, y_train, y_test = train_test_split(X_OneHotEncoded, y, test_size=0.01, random_state=6)
 
@@ -123,28 +103,22 @@ def custom_activation(output):
 	return result
 
 def define_discriminator(n_classes=CLASSES):
-  # image input
+  # input
   in_image = Input(shape=(INPUT_SIZE,))   
-  # downsample
+  
   fe = Dense(units=128, activation='relu')(in_image)
   fe = LeakyReLU(alpha=0.2)(fe)
-  # downsample
+  
   fe = Dense(units=128, activation='relu')(fe)
   fe = LeakyReLU(alpha=0.2)(fe)
-  # downsample
+  
   fe = Dense(units=128, activation='relu')(fe)
   fe = LeakyReLU(alpha=0.2)(fe)
-  # downsample
+  
   fe = Dense(units=128, activation='relu')(fe)
-  fe = LeakyReLU(alpha=0.2)(fe)
-  # downsample
-  fe = Dense(units=128, activation='relu')(fe)
-  fe = LeakyReLU(alpha=0.2)(fe)
-  # downsample
-  fe = Dense(units=128, activation='relu')(fe)
-  fe = LeakyReLU(alpha=0.2)(fe)    
-  # dropout
+  fe = LeakyReLU(alpha=0.2)(fe)    	
   fe = Dropout(0.4)(fe)
+	
   # output layer nodes
   fe = Dense(n_classes)(fe)
   # supervised output
@@ -167,12 +141,9 @@ def define_discriminator(n_classes=CLASSES):
 # define the standalone generator model
 def define_generator(latent_dim, n_outputs=INPUT_SIZE):
 	model = Sequential()
-	model.add(Dense(200, activation='relu', kernel_initializer='he_uniform', input_dim=latent_dim))
-	model.add(Dense(128, activation='relu'))
-	model.add(Dense(128, activation='relu'))    
-	model.add(Dense(128, activation='relu'))     
-	model.add(Dense(128, activation='relu'))       
-	model.add(Dense(n_outputs, activation='relu'))
+	model.add(Dense(200, activation='sigmoid', kernel_initializer='he_uniform', input_dim=latent_dim))
+	model.add(Dense(128, activation='sigmoid'))  
+	model.add(Dense(n_outputs, activation='sigmoid'))
 	model.summary()
 	return model
 
@@ -190,7 +161,7 @@ def define_gan(g_model, d_model):
 
 	return model
 
-# load the images
+# load the data
 def load_real_samples(X,y):    
 	X = X / 20
 	print(X.shape, y.shape)
