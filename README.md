@@ -1,7 +1,7 @@
 # 
 
 
->**This is the official implementation of the paper with the title “A Human Activity Recognition Method Based on Lightweight Feature Extraction Combined with Pruned and Quantized CNN for Wearable Devices”by Myung-Kyu Yi and Seong-Oun Hwang.**
+>**This is the official implementation of the paper with the title “A Data-driven Feature Extraction Method Based on Data Supplement for Human Activity Recognition”by Myung-Kyu Yi and Seong-Oun Hwang.**
 
 ## Paper Overview
 
@@ -27,15 +27,11 @@ If our project is helpful for your research, please consider citing :
 
 ```
 
-@misc{https://doi.org/1,
-  doi = {},
-  url = {},
-  author = {Myung-Kyu Yi and Seong-Oun Hwang},
-  keywords = {human activity recognition, data-centric AI, wearable device, generative AI, semi-supervised learning},
-  title = {A Human Activity Recognition Method Based on Lightweight Feature Extraction Combined with Pruned and Quantized CNN for Wearable Devices},
-  publisher = {arXiv},
-  year = {2022},
-  copyright = {arXiv.org perpetual, non-exclusive license}
+@inJournal{XXX,
+  title={A Data-driven Feature Extraction Method Based on Data Supplement for Human Activity Recognition},
+  author={Myung-Kyu Yi and Seong-Oun Hwang},
+  booktitle={IEEE XXX},
+  year={2023}
 }
 
 ```
