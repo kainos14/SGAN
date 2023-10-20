@@ -298,8 +298,8 @@ print("Trainig Start")
 
 train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list)
 
-#_, test_acc = c_model.evaluate(X_test, y_test, verbose=0)
-#print('Test Accuracy: %.3f%%' % (test_acc * 100))
+_, test_acc = c_model.evaluate(X_test, y_test, verbose=0)
+print('Test Accuracy: %.3f%%' % (test_acc * 100))
    
 print("End")
 print("Time: {:.1f}min".format(((time.time() - start_time))/60))
