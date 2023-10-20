@@ -111,10 +111,7 @@ def define_discriminator(n_classes=CLASSES):
   
   fe = Dense(units=128, activation='relu')(fe)
   fe = LeakyReLU(alpha=0.2)(fe)
-  
-  fe = Dense(units=128, activation='relu')(fe)
-  fe = LeakyReLU(alpha=0.2)(fe)
-  
+	
   fe = Dense(units=128, activation='relu')(fe)
   fe = LeakyReLU(alpha=0.2)(fe)    	
   fe = Dropout(0.4)(fe)
@@ -158,7 +155,6 @@ def define_gan(g_model, d_model):
 	# compile model
 	opt = Adam(lr=0.003, beta_1=0.5)
 	model.compile(loss='binary_crossentropy', optimizer=opt)
-
 	return model
 
 # load the data
