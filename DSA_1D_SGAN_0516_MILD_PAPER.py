@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[203]:
-
-
 import pandas as pd
 from sklearn.model_selection import StratifiedShuffleSplit
 from scipy.stats import skew
@@ -14,199 +8,9 @@ from tqdm import tqdm
 import math
 import numpy as np
 
-
-# In[204]:
-
-
-features = pd.read_csv("F:/HAR/DSADS/features2.csv", index_col = 0)
-
-
-# In[205]:
-
-
-features 
-
-
-# In[206]:
-
-
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn import preprocessing
-
-# Define column name of the label vector
-LABEL = 'ActivityEncoded'
-# Transform the labels from String to Integer via LabelEncoder
-le = preprocessing.LabelEncoder()
-# Add a new column to the existing DataFrame with the encoded values
-features[LABEL] = le.fit_transform(features['activity'].values.ravel())
-
-
-# In[207]:
-
-
-features.drop(['activity'], axis=1, inplace=True)
-
-
-# In[208]:
-
-
-features['ActivityEncoded'].value_counts()
-
-
-# In[209]:
-
-
-features
-
-
-# In[210]:
-
-
-"""
-sitting                    6
-standing                   7
-lyingBack                  3
-lyingRigh                  4
-
-ascendingStairs            0
-decendingStairs            1
-walkingLot                 8
-walkingTreadmillFlat       9
-walkingTreadmillIncline    10
-
-runningTreadmill           5
-jumping                    2
-"""
-
-
-# In[211]:
-
-
-features['ActivityEncoded'].value_counts()
-
-
-# In[212]:
-
-
-# TEST CODE 1
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-plt.figure(figsize=(7,7))
-sns.boxplot(x='ActivityEncoded', y='T_xacc_std',data=features, showfliers=False, saturation=1)
-plt.ylabel('Standard Deviation for Acceleration X')
-
-plt.axhline(y=5.5,dashes=(5,5), c='g')
-plt.axhline(y=1, dashes=(5,5), c='m')
-
-plt.xticks(rotation=90)
-plt.show()
-
-
-# In[213]:
-
-
-features['ActivityEncoded'].value_counts()
-
-
-# In[214]:
-
-
-
-import time
-start_time = time.time()
-
-print("Trainig Start")
-
-condition = np.where(features['T_xacc_std'] > 0.4)
-features2 = features.iloc[condition]
-
-condition = np.where(features2['T_xacc_std'] < 5.5)
-new_features = features2.iloc[condition]
-
-print("End")
-print("Time: {:.1f}min".format(((time.time() - start_time))/60))
-
-
-# In[215]:
-
-
-new_features['ActivityEncoded'].value_counts()
-
-
-# In[216]:
-
-
-idx = new_features[new_features['ActivityEncoded'] == 3].index
-new_features.drop(idx , inplace=True)
-
-
-# In[217]:
-
-
-idx = new_features[new_features['ActivityEncoded'] == 2].index
-new_features.drop(idx , inplace=True)
-
-
-# In[218]:
-
-
-idx = new_features[new_features['ActivityEncoded'] == 4].index
-new_features.drop(idx , inplace=True)
-
-
-# In[219]:
-
-
-idx = new_features[new_features['ActivityEncoded'] == 6].index
-new_features.drop(idx , inplace=True)
-
-
-# In[220]:
-
-
-new_features['ActivityEncoded'].value_counts()
-
-
-# In[221]:
-
-
-new_features = new_features.replace({'ActivityEncoded':8},2)
-
-
-# In[222]:
-
-
-new_features = new_features.replace({'ActivityEncoded':10},3)
-
-
-# In[223]:
-
-
-new_features = new_features.replace({'ActivityEncoded':9},4)
-
-
-# In[224]:
-
-
-new_features['ActivityEncoded'].value_counts()
-
-
-# In[225]:
-
-
-new_features = pd.concat([new_features, new_features], axis = 0)
-
-
-# In[226]:
-
-
-new_features['ActivityEncoded'].value_counts()
-
-
-# In[227]:
-
 
 from numpy import expand_dims
 from numpy import zeros
@@ -238,9 +42,7 @@ import os
 from tensorflow.keras.utils import to_categorical
 
 
-# In[228]:
-
-
+features = pd.read_csv("F:/HAR/DSADS/features.csv", index_col = 0)
 
 f_col_all = ['T_xacc_mean', 'T_xacc_max', 'T_xacc_min','T_xacc_var',
        'T_xacc_std', 'T_xacc_skew', 'T_yacc_mean', 'T_yacc_max', 'T_yacc_min',
@@ -253,8 +55,7 @@ f_col_all = ['T_xacc_mean', 'T_xacc_max', 'T_xacc_min','T_xacc_var',
        'T_zgyro_skew', 'T_xmag_mean', 'T_xmag_max', 'T_xmag_min', 'T_xmag_var',
        'T_xmag_std', 'T_xmag_skew', 'T_ymag_mean', 'T_ymag_max', 'T_ymag_min',
        'T_ymag_var', 'T_ymag_std', 'T_ymag_skew', 'T_zmag_mean', 'T_zmag_max',
-       'T_zmag_min', 'T_zmag_var', 'T_zmag_std', 'T_zmag_skew']
-       
+       'T_zmag_min', 'T_zmag_var', 'T_zmag_std', 'T_zmag_skew']       
 
 X = new_features[f_col_all]  # all features
 
@@ -264,10 +65,6 @@ f_col_OHE = list(X_OneHotEncoded.columns.values)
 y = new_features["ActivityEncoded"].apply(lambda x: 1 if x== "Yes" else 0 )  # Labels
 y = new_features["ActivityEncoded"]
 print(X_OneHotEncoded.head())
-
-
-# In[229]:
-
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -282,10 +79,6 @@ from sklearn.preprocessing import scale
 import numpy as np
 import pandas as pd
 
-
-# In[230]:
-
-
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -296,10 +89,6 @@ print("X_train :", X_train.shape)
 print("y_train :", y_train.shape)
 print("X_test :", X_test.shape)
 print("y_test :", y_test.shape)
-
-
-# In[231]:
-
 
 from numpy import expand_dims
 from numpy import zeros
@@ -324,26 +113,14 @@ from matplotlib import pyplot
 from keras import backend
 from keras.models import Sequential
 
-
-# In[232]:
-
-
-CLASSES = 5
+CLASSES = 4
 INPUT_SIZE = 54
-
-
-# In[233]:
-
 
 # custom activation function
 def custom_activation(output):
 	logexpsum = backend.sum(backend.exp(output), axis=-1, keepdims=True)
 	result = logexpsum / (logexpsum + 1.0)
 	return result
-
-
-# In[234]:
-
 
 def define_discriminator(n_classes=CLASSES):
   # image input
@@ -387,10 +164,6 @@ def define_discriminator(n_classes=CLASSES):
   d_model.summary()
   return d_model, c_model
 
-
-# In[235]:
-
-
 # define the standalone generator model
 def define_generator(latent_dim, n_outputs=INPUT_SIZE):
 	model = Sequential()
@@ -402,10 +175,6 @@ def define_generator(latent_dim, n_outputs=INPUT_SIZE):
 	model.add(Dense(n_outputs, activation='relu'))
 	model.summary()
 	return model
-
-
-# In[236]:
-
 
 # define the combined generator and discriminator model, for updating the generator
 def define_gan(g_model, d_model):
@@ -421,31 +190,11 @@ def define_gan(g_model, d_model):
 
 	return model
 
-
-# In[237]:
-
-
 # load the images
 def load_real_samples(X,y):    
 	X = X / 20
 	print(X.shape, y.shape)
 	return [X, y]
-
-
-# In[238]:
-
-
-# select a supervised subset of the dataset, ensures classes are balanced
-def select_supervised_samples(dataset2, n_samples=143, n_classes=CLASSES):
-  X, y = dataset2
-  rand = randint(0,1000)
-  #n_per_class = int(n_samples / n_classes)
-  n_per_class = int(n_samples)
-  return X.sample(n=n_per_class,replace=False, random_state=rand), y.sample(n=n_per_class,replace=False, random_state=rand)
-
-
-# In[239]:
-
 
 # select real samples
 def generate_real_samples(dataset, n_samples):
@@ -478,39 +227,10 @@ def generate_fake_samples(generator, latent_dim, n_samples):
 	y = zeros((n_samples, 1))
 	return images, y
 
-
-# In[240]:
-
-
-# generate samples and save as a plot and save the model
-
-def summarize_performance(step, g_model, c_model, latent_dim, dataset, acc_list, n_samples=100):
-    
-	# evaluate the classifier model
-	X, y = dataset
-	_, acc = c_model.evaluate(X, y, verbose=0)
-	print('Classifier Accuracy: %.3f%%' % (acc * 100))
-	acc_list.append(acc)
-
-    
-	# save the generator model
-	filename2 = 'models/g_model_%04d.h5' % (step+1)
-	g_model.save(filename2)
-    
-	# save the classifier model
-	filename3 = 'models/c_model_%04d.h5' % (step+1)
-	c_model.save(filename3)
-	#print('>Saved:  %s and %s' % (filename2, filename3))
-
-
-# In[241]:
-
-
 d_supervised_losses=[]
 g_supervised_losses=[]
 c_accuray=[]
 iteration_checkpoints=[]
-
 
 def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n_epochs=200, n_batch=100):
     
@@ -555,9 +275,6 @@ def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n
 			iteration_checkpoints.append(i+1)            
 
 
-# In[242]:
-
-
 #accuracy list for each epochs
 acc_list = []
 
@@ -573,13 +290,7 @@ gan_model = define_gan(g_model, d_model)
 dataset = load_real_samples(X_train,y_train)
 
 X, y = dataset
-dataset2 = dataset.copy()
-
 print("Total dataset: ", X.shape, y.shape)
-
-
-# In[ ]:
-
 
 import time
 start_time = time.time()
@@ -589,20 +300,6 @@ train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list)
 
 #_, test_acc = c_model.evaluate(X_test, y_test, verbose=0)
 #print('Test Accuracy: %.3f%%' % (test_acc * 100))
-
-    
+   
 print("End")
 print("Time: {:.1f}min".format(((time.time() - start_time))/60))
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
