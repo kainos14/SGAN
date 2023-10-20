@@ -165,7 +165,7 @@ def load_real_samples(X,y):
 
 # select real samples
 def generate_real_samples(dataset, n_samples):
-	# split into images and labels
+	# split into data and labels
   features, labels = dataset
 	# choose random instances
   rand = randint(0, 1000)
@@ -253,7 +253,7 @@ d_model, c_model = define_discriminator()
 g_model = define_generator(latent_dim)
 # create the gan
 gan_model = define_gan(g_model, d_model)
-# load image data
+# load data
 dataset = load_real_samples(X_train,y_train)
 
 X, y = dataset
