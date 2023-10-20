@@ -9,9 +9,9 @@
 
 ---
 ## Dataset
-PAMAP2 dataset is available at https://archive.ics.uci.edu/ml/datasets/pamap2+physical+activity+monitoring
-DSADS dataset is available at https://archive.ics.uci.edu/dataset/256/daily+and+sports+activitie
-MobiAct dataset is available at https://bmi.hmu.gr/the-mobifall-and-mobiact-datasets-2
+- PAMAP2 dataset is available at https://archive.ics.uci.edu/ml/datasets/pamap2+physical+activity+monitoring
+- DSADS dataset is available at https://archive.ics.uci.edu/dataset/256/daily+and+sports+activitie
+- MobiAct dataset is available at https://bmi.hmu.gr/the-mobifall-and-mobiact-datasets-2
 
 ## Codebase Overview
 - We note that:
