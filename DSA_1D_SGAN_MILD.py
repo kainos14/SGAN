@@ -21,8 +21,6 @@ from keras.layers import Input
 from keras.layers import Dense
 from keras.layers import Reshape
 from keras.layers import Flatten
-from keras.layers import Conv2D
-from keras.layers import Conv2DTranspose
 from keras.layers import LeakyReLU
 from keras.layers import Dropout
 from keras.layers import Lambda
@@ -38,6 +36,14 @@ import tensorflow as tf
 import glob
 import os
 from tensorflow.keras.utils import to_categorical
+from numpy import expand_dims
+from numpy import zeros
+from numpy import ones
+from numpy import asarray
+from numpy.random import randn
+from numpy.random import randint
+from tensorflow.keras.optimizers import Adam
+from keras.models import Sequential
 
 features = pd.read_csv("F:/HAR/DSADS/features.csv", index_col = 0)
 
@@ -69,29 +75,6 @@ print("X_train :", X_train.shape)
 print("y_train :", y_train.shape)
 print("X_test :", X_test.shape)
 print("y_test :", y_test.shape)
-
-from numpy import expand_dims
-from numpy import zeros
-from numpy import ones
-from numpy import asarray
-from numpy.random import randn
-from numpy.random import randint
-from tensorflow.keras.optimizers import Adam
-from keras.models import Model
-from keras.layers import Input
-from keras.layers import Dense
-from keras.layers import Reshape
-from keras.layers import Flatten
-from keras.layers import Conv2D
-from keras.layers import Conv1D
-from keras.layers import Conv2DTranspose
-from keras.layers import LeakyReLU
-from keras.layers import Dropout
-from keras.layers import Lambda
-from keras.layers import Activation
-from matplotlib import pyplot
-from keras import backend
-from keras.models import Sequential
 
 CLASSES = 4
 INPUT_SIZE = 54
@@ -193,6 +176,50 @@ def generate_fake_samples(generator, latent_dim, n_samples):
 	# create class labels
 	y = zeros((n_samples, 1))
 	return images, y
+
+d_supervised_losses=[]
+g_supervised_losses=[]
+c_accuray=[]
+iteration_checkpoints=[]
+
+def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n_epochs=200, n_batch=100):
+    
+	# select supervised dataset
+	X_sup, y_sup = select_supervised_samples(dataset)    
+	#print("Select extended supervised dataset: ", X_sup2.shape, y_sup2.shape)
+    
+	# calculate the number of batches per training epoch
+	bat_per_epo = int(dataset[0].shape[0] / n_batch)
+    
+	# calculate the number of training iterations
+	n_steps = bat_per_epo * n_epochs
+    
+	# calculate the size of half a batch of samples
+	half_batch = int(n_batch / 2)
+	print('n_epochs=%d, n_batch=%d, 1/2=%d, b/e=%d, steps=%d' % (n_epochs, n_batch, half_batch, bat_per_epo, n_steps))
+    
+	# manually enumerate epochs
+	for i in range(n_steps):
+		# update supervised discriminator (c)
+		[Xsup_real, ysup_real], _ = generate_real_samples([X_sup, y_sup], half_batch)
+		c_loss, c_acc = c_model.train_on_batch(Xsup_real, ysup_real)
+		# update unsupervised discriminator (d)
+		[X_real, _], y_real = generate_real_samples(dataset, half_batch)
+		d_loss1 = d_model.train_on_batch(X_real, y_real)
+		X_fake, y_fake = generate_fake_samples(g_model, latent_dim, half_batch)
+		d_loss2 = d_model.train_on_batch(X_fake, y_fake)
+		# update generator (g)
+		X_gan, y_gan = generate_latent_points(latent_dim, n_batch), ones((n_batch, 1))
+		g_loss = gan_model.train_on_batch(X_gan, y_gan)
+		# summarize loss on this batch
+		print('>%d, c[%.3f,%.0f%%], d[%.3f,%.3f], g[%.3f]' % (i+1, c_loss, c_acc*100, d_loss1, d_loss2, g_loss))                
+ 
+		if (i+1) % (100) == 0:            
+			summarize_performance(i, g_model, c_model, latent_dim, dataset, acc_list)
+			d_supervised_losses.append(d_loss1)
+			g_supervised_losses.append(g_loss)
+			c_accuray.append(c_acc)
+			iteration_checkpoints.append(i+1)            
 
 d_supervised_losses=[]
 g_supervised_losses=[]
