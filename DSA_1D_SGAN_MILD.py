@@ -186,7 +186,7 @@ def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n
     
 	# select supervised dataset
 	X_sup, y_sup = select_supervised_samples(dataset)    
-	#print("Select extended supervised dataset: ", X_sup2.shape, y_sup2.shape)
+	#print("Select extended supervised dataset: ", X_sup.shape, y_sup.shape)
     
 	# calculate the number of batches per training epoch
 	bat_per_epo = int(dataset[0].shape[0] / n_batch)
@@ -212,8 +212,7 @@ def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n
 		X_gan, y_gan = generate_latent_points(latent_dim, n_batch), ones((n_batch, 1))
 		g_loss = gan_model.train_on_batch(X_gan, y_gan)
 		# summarize loss on this batch
-		print('>%d, c[%.3f,%.0f%%], d[%.3f,%.3f], g[%.3f]' % (i+1, c_loss, c_acc*100, d_loss1, d_loss2, g_loss))                
- 
+		print('>%d, c[%.3f,%.0f%%], d[%.3f,%.3f], g[%.3f]' % (i+1, c_loss, c_acc*100, d_loss1, d_loss2, g_loss)) 
 		if (i+1) % (100) == 0:            
 			summarize_performance(i, g_model, c_model, latent_dim, dataset, acc_list)
 			d_supervised_losses.append(d_loss1)
