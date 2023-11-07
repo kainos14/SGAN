@@ -44,6 +44,9 @@ import tensorflow as tf
 
 features = pd.read_csv("D:/HAR/DSADS/features.csv")
 
+# This source code is SGAN for DSADS dataset. 
+# To use a different dataset, only modify the feature name of f_col_all list.
+
 LABEL = 'ActivityEncoded'
 le = preprocessing.LabelEncoder()
 features[LABEL] = le.fit_transform(features['activity'].values.ravel())
