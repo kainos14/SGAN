@@ -16,7 +16,7 @@
 ## Codebase Overview
 - We note that:
   - <Data-driven_Feature_Extraction.ipynb> for our proposed data-feaute extaction technique.
-  - <Data-refinement.ipynb> for our proposed data refinement technique.
+  - <Data-Refinement.ipynb> for our proposed data refinement technique.
   - <SGAN.ipynb> for baseline SGAN model
 
 Framework uses Tensorflow 2+, tensorflow_addons, numpy, pandas, matplotlib, scikit-learn.  
