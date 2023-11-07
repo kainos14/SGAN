@@ -1,3 +1,5 @@
+# Reference : https://machinelearningmastery.com/semi-supervised-generative-adversarial-network/
+
 from keras import backend
 from keras.datasets.mnist import load_data
 from keras.layers import Activation
