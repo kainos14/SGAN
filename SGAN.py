@@ -1,142 +1,54 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
+from keras import backend
+from keras.datasets.mnist import load_data
+from keras.layers import Activation
+from keras.layers import Conv1D
+from keras.layers import Conv2D
+from keras.layers import Conv2DTranspose
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras.layers import Flatten
+from keras.layers import Input
+from keras.layers import Lambda
+from keras.layers import LeakyReLU
+from keras.layers import Reshape
+from keras.models import Model
+from keras.models import Sequential
+from matplotlib import pyplot
+from numpy import asarray
+from numpy import expand_dims
+from numpy import ones
+from numpy import zeros
+from numpy.random import randint
+from numpy.random import randn
 from scipy.stats import skew
-import os
-import csv
-import pandas as pd
+from sklearn import preprocessing
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import scale
+from sklearn.tree import DecisionTreeClassifier
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import to_categorical
 from tqdm import tqdm
-
-
-# In[2]:
-
+import csv
+import glob
+import numpy as np
+import os
+import os
+import pandas as pd
+import tensorflow as tf
 
 features = pd.read_csv("D:/HAR/DSADS/features.csv")
 
-
-# In[3]:
-
-
-features 
-
-
-# In[4]:
-
-
-features['activity'].value_counts()
-
-
-# In[5]:
-
-
-indexes = features[ (features['activity'] != 'sitting')   & 
-                    (features['activity'] != 'standing')  & 
-                    (features['activity'] != 'lyingRigh') & 
-                    (features['activity'] != 'lyingBack')].index
-features.drop(indexes , inplace=True)
-
-
-# In[6]:
-
-
-features['activity'].value_counts()
-
-
-# In[7]:
-
-
-features['people'].value_counts()
-
-
-# In[8]:
-
-
-import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn import preprocessing
-
-# Define column name of the label vector
 LABEL = 'ActivityEncoded'
-# Transform the labels from String to Integer via LabelEncoder
 le = preprocessing.LabelEncoder()
-# Add a new column to the existing DataFrame with the encoded values
 features[LABEL] = le.fit_transform(features['activity'].values.ravel())
 
-
-# In[9]:
-
-
-features['ActivityEncoded'].value_counts()
-
-
-# In[10]:
-
-
-"""
-sitting                    6
-standing                   7
-lyingBack                  3
-lyingRigh                  4
-
-ascendingStairs            0
-decendingStairs            1
-walkingLot                 8
-walkingTreadmillFlat       9
-walkingTreadmillIncline    10
-
-runningTreadmill           5
-jumping                    2
-"""
-
-
-# In[11]:
-
-
-condition = np.where(features['people'] == 'p1')
-features1 = features.iloc[condition]
-
-condition2 = np.where(features['people'] != 'p1')
-features2 = features.iloc[condition2]
-
-
-# In[12]:
-
-
-from numpy import expand_dims
-from numpy import zeros
-from numpy import ones
-from numpy import asarray
-from numpy.random import randn
-from numpy.random import randint
-from keras.datasets.mnist import load_data
-from tensorflow.keras.optimizers import Adam
-from keras.models import Model
-from keras.layers import Input
-from keras.layers import Dense
-from keras.layers import Reshape
-from keras.layers import Flatten
-from keras.layers import Conv2D
-from keras.layers import Conv2DTranspose
-from keras.layers import LeakyReLU
-from keras.layers import Dropout
-from keras.layers import Lambda
-from keras.layers import Activation
-from matplotlib import pyplot
-from keras import backend
-
-import tensorflow as tf
-import pandas as pd
-import numpy as np
-import glob
-import os
-from tensorflow.keras.utils import to_categorical
-
-
-# In[13]:
-
+features['activity'].value_counts()
 
 f_col_all = ['T_xacc_mean', 'T_xacc_max', 'T_xacc_min','T_xacc_var',
        'T_xacc_std', 'T_xacc_skew', 'T_yacc_mean', 'T_yacc_max', 'T_yacc_min',
@@ -151,7 +63,6 @@ f_col_all = ['T_xacc_mean', 'T_xacc_max', 'T_xacc_min','T_xacc_var',
        'T_ymag_var', 'T_ymag_std', 'T_ymag_skew', 'T_zmag_mean', 'T_zmag_max',
        'T_zmag_min', 'T_zmag_var', 'T_zmag_std', 'T_zmag_skew']
        
-
 X = features1[f_col_all]  # all features
 
 X_OneHotEncoded = pd.get_dummies(X)  # all features and OneHotEncoded
@@ -160,92 +71,8 @@ f_col_OHE = list(X_OneHotEncoded.columns.values)
 y = features1["ActivityEncoded"].apply(lambda x: 1 if x== "Yes" else 0 )  # Labels
 y = features1["ActivityEncoded"]
 
-
-# In[14]:
-
-
-f_col_all = ['T_xacc_mean', 'T_xacc_max', 'T_xacc_min','T_xacc_var',
-       'T_xacc_std', 'T_xacc_skew', 'T_yacc_mean', 'T_yacc_max', 'T_yacc_min',
-       'T_yacc_var', 'T_yacc_std', 'T_yacc_skew', 'T_zacc_mean', 'T_zacc_max',
-       'T_zacc_min', 'T_zacc_var', 'T_zacc_std', 'T_zacc_skew', 'T_xgyro_mean',
-       'T_xgyro_max', 'T_xgyro_min', 'T_xgyro_var', 'T_xgyro_std',
-       'T_xgyro_skew', 'T_ygyro_mean', 'T_ygyro_max', 'T_ygyro_min',
-       'T_ygyro_var', 'T_ygyro_std', 'T_ygyro_skew', 'T_zgyro_mean',
-       'T_zgyro_max', 'T_zgyro_min', 'T_zgyro_var', 'T_zgyro_std',
-       'T_zgyro_skew', 'T_xmag_mean', 'T_xmag_max', 'T_xmag_min', 'T_xmag_var',
-       'T_xmag_std', 'T_xmag_skew', 'T_ymag_mean', 'T_ymag_max', 'T_ymag_min',
-       'T_ymag_var', 'T_ymag_std', 'T_ymag_skew', 'T_zmag_mean', 'T_zmag_max',
-       'T_zmag_min', 'T_zmag_var', 'T_zmag_std', 'T_zmag_skew']
-       
-
-X2 = features2[f_col_all]  # all features
-
-X_OneHotEncoded = pd.get_dummies(X)  # all features and OneHotEncoded
-f_col_OHE = list(X_OneHotEncoded.columns.values)
-
-y2 = features2["ActivityEncoded"].apply(lambda x: 1 if x== "Yes" else 0 )  # Labels
-y2 = features2["ActivityEncoded"]
-
-
-# In[15]:
-
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import scale
-
-
-import numpy as np
-import pandas as pd
-
-
-# In[16]:
-
-
-from numpy import expand_dims
-from numpy import zeros
-from numpy import ones
-from numpy import asarray
-from numpy.random import randn
-from numpy.random import randint
-from tensorflow.keras.optimizers import Adam
-from keras.models import Model
-from keras.layers import Input
-from keras.layers import Dense
-from keras.layers import Reshape
-from keras.layers import Flatten
-from keras.layers import Conv2D
-from keras.layers import Conv1D
-from keras.layers import Conv2DTranspose
-from keras.layers import LeakyReLU
-from keras.layers import Dropout
-from keras.layers import Lambda
-from keras.layers import Activation
-from matplotlib import pyplot
-from keras import backend
-from keras.models import Sequential
-
-
-# In[17]:
-
-
-X.shape, y.shape
-
-
-# In[18]:
-
-
-CLASSES = 4
+CLASSES = 19
 INPUT_SIZE = 54
-
-
-# In[19]:
-
 
 # custom activation function
 def custom_activation(output):
@@ -253,20 +80,16 @@ def custom_activation(output):
 	result = logexpsum / (logexpsum + 1.0)
 	return result
 
-
-# In[20]:
-
-
 def define_discriminator(n_classes=CLASSES):
   # image input
   in_image = Input(shape=(INPUT_SIZE,))   
-  # downsample
+  
   fe = Dense(units=128, activation='sigmoid')(in_image)
   fe = LeakyReLU(alpha=0.2)(fe)
-  # downsample
+  
   fe = Dense(units=128, activation='sigmoid')(fe)
   fe = LeakyReLU(alpha=0.2)(fe)
-  # downsample
+ 
   fe = Dense(units=128, activation='sigmoid')(fe)
   fe = LeakyReLU(alpha=0.2)(fe)
   # dropout
@@ -290,22 +113,14 @@ def define_discriminator(n_classes=CLASSES):
   d_model.summary()
   return d_model, c_model
 
-
-# In[21]:
-
-
 # define the standalone generator model
 def define_generator(latent_dim, n_outputs=INPUT_SIZE):
 	model = Sequential()
-	model.add(Dense(200, activation='sigmoid', kernel_initializer='he_uniform', input_dim=latent_dim))
+	model.add(Dense(128, activation='sigmoid', kernel_initializer='he_uniform', input_dim=latent_dim))
 	model.add(Dense(128, activation='sigmoid'))
-	model.add(Dense(n_outputs, activation='relu'))
+	model.add(Dense(n_outputs, activation='sigmoid'))
 	model.summary()
 	return model
-
-
-# In[22]:
-
 
 # define the combined generator and discriminator model, for updating the generator
 def define_gan(g_model, d_model):
@@ -322,30 +137,11 @@ def define_gan(g_model, d_model):
 	return model
 
 
-# In[23]:
-
-
 # load the images
 def load_real_samples(X,y):    
 	X = X / 20
 	print(X.shape, y.shape)
 	return [X, y]
-
-
-# In[24]:
-
-
-# select a supervised subset of the dataset, ensures classes are balanced
-def select_supervised_samples(dataset2, n_samples=144, n_classes=CLASSES):
-  X, y = dataset2
-  rand = randint(0,1000)
-  #n_per_class = int(n_samples / n_classes)
-  n_per_class = int(n_samples)
-  return X.sample(n=n_per_class,replace=False, random_state=rand), y.sample(n=n_per_class,replace=False, random_state=rand)
-
-
-# In[25]:
-
 
 # select real samples
 def generate_real_samples(dataset, n_samples):
@@ -378,12 +174,7 @@ def generate_fake_samples(generator, latent_dim, n_samples):
 	y = zeros((n_samples, 1))
 	return images, y
 
-
-# In[26]:
-
-
 # generate samples and save as a plot and save the model
-
 def summarize_performance(step, g_model, c_model, latent_dim, dataset, acc_list, n_samples=100):
     
 	# evaluate the classifier model
@@ -400,10 +191,6 @@ def summarize_performance(step, g_model, c_model, latent_dim, dataset, acc_list,
 	filename3 = 'models/c_model_%04d.h5' % (step+1)
 	c_model.save(filename3)
 	#print('>Saved:  %s and %s' % (filename2, filename3))
-
-
-# In[27]:
-
 
 d_supervised_losses=[]
 g_supervised_losses=[]
@@ -452,41 +239,34 @@ def train(g_model, d_model, c_model, gan_model, dataset, dataset2, latent_dim, a
 			c_accuray.append(c_acc)
 			iteration_checkpoints.append(i+1)            
 
-
-# In[28]:
-
-
 #accuracy list for each epochs
 acc_list = []
-
 latent_dim = 100
 
 d_model, c_model = define_discriminator()
-
 g_model = define_generator(latent_dim)
-
 gan_model = define_gan(g_model, d_model)
 
 dataset = load_real_samples(X2, y2)
-dataset2 = load_real_samples(X, y)
 
 X, y = dataset
 print("Total dataset: ", X.shape, y.shape)
 
-X2, y2 = dataset2
-print("Sample: ", X2.shape, y2.shape)
-
-
-# In[ ]:
-
-
 import time
 start_time = time.time()
 print("Trainig Start")
-
-train(g_model, d_model, c_model, gan_model, dataset, dataset2, latent_dim, acc_list)
-
-   
+train(g_model, d_model, c_model, gan_model, dataset, dataset2, latent_dim, acc_list) 
 print("End")
 print("Time: {:.1f}min".format(((time.time() - start_time))/60))
+
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+
+model = load_model('C:/Users/GC/models/c_model_100000.h5')
+
+_, train_acc = model.evaluate(X_train, y_train, verbose=0)
+print('Train Accuracy: %.3f%%' % (train_acc * 100))
+
+_, test_acc = model.evaluate(X_test, y_test, verbose=0)
+print('Test Accuracy: %.3f%%' % (test_acc * 100))
 
