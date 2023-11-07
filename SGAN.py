@@ -68,13 +68,13 @@ f_col_all = ['T_xacc_mean', 'T_xacc_max', 'T_xacc_min','T_xacc_var',
        'T_ymag_var', 'T_ymag_std', 'T_ymag_skew', 'T_zmag_mean', 'T_zmag_max',
        'T_zmag_min', 'T_zmag_var', 'T_zmag_std', 'T_zmag_skew']
        
-X = features1[f_col_all]  # all features
+X = features[f_col_all]  # all features
 
 X_OneHotEncoded = pd.get_dummies(X)  # all features and OneHotEncoded
 f_col_OHE = list(X_OneHotEncoded.columns.values)
 
-y = features1["ActivityEncoded"].apply(lambda x: 1 if x== "Yes" else 0 )  # Labels
-y = features1["ActivityEncoded"]
+y = features["ActivityEncoded"].apply(lambda x: 1 if x== "Yes" else 0 )  # Labels
+y = features["ActivityEncoded"]
 
 CLASSES = 19
 INPUT_SIZE = 54
