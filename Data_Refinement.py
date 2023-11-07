@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[54]:
-
 
 import pandas as pd
 import numpy as np
@@ -14,42 +9,15 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import LabelEncoder
 import os
 
-
-# In[60]:
-
-
 data= pd.read_csv("D:/HAR/PAMAP2_Dataset/PAMAP_features.csv",index_col = 0)
-
-
-# In[61]:
-
-
-data
-
-
-# In[62]:
-
-
 data['activity_id'].value_counts()
-
-
-# In[64]:
-
 
 label=LabelEncoder()
 data['activity_id']=label.fit_transform(data['activity_id'])
 data.head()
 
-
-# In[65]:
-
-
 NUM_LABEL = 45
 SAMPLE_NUM = 10
-
-
-# In[66]:
-
 
 def create_samples(data, num_duplicates=NUM_LABEL):
     df = pd.DataFrame()
@@ -59,15 +27,7 @@ def create_samples(data, num_duplicates=NUM_LABEL):
         df = pd.concat([df, samples], ignore_index=True)  # 'concat' 사용
     return df
 
-
-# In[67]:
-
-
 df['activity_id'].value_counts()
-
-
-# In[68]:
-
 
 for i in range(SAMPLE_NUM):
     df = create_samples(data, num_duplicates=NUM_LABEL)
@@ -77,12 +37,8 @@ for i in range(SAMPLE_NUM):
     df.to_csv(output_csv_file, index=False)
     print(f'Repeat {i+1} - data has been saved to file {output_csv_file}.')
 
-
-# In[76]:
-
-
 # load model
-model = load_model('C:/Users/GC/models/c_model_0400.h5')
+model = load_model('C:/Users/GC/models/c_model_40000.h5')
 
 # Folder path
 data_folder = 'D:/HAR/PAMAP2_Dataset'
