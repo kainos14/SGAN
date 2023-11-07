@@ -204,10 +204,10 @@ iteration_checkpoints=[]
 
 
 # train the generator and discriminator
-def train(g_model, d_model, c_model, gan_model, dataset, dataset2, latent_dim, acc_list, n_epochs=200, n_batch=100):
+def train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list, n_epochs=200, n_batch=100):
     
 	# select supervised dataset
-	X_sup, y_sup = select_supervised_samples(dataset2)
+	X_sup, y_sup = select_supervised_samples(dataset)
 	print("Select supervised dataset: ", X_sup.shape, y_sup.shape)
     
 	# calculate the number of batches per training epoch
@@ -260,7 +260,7 @@ print("Total dataset: ", X.shape, y.shape)
 import time
 start_time = time.time()
 print("Trainig Start")
-train(g_model, d_model, c_model, gan_model, dataset, dataset2, latent_dim, acc_list) 
+train(g_model, d_model, c_model, gan_model, dataset, latent_dim, acc_list) 
 print("End")
 print("Time: {:.1f}min".format(((time.time() - start_time))/60))
 
