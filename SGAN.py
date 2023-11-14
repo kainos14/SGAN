@@ -252,7 +252,7 @@ d_model, c_model = define_discriminator()
 g_model = define_generator(latent_dim)
 gan_model = define_gan(g_model, d_model)
 
-dataset = load_real_samples(X2, y2)
+dataset = load_real_samples(X, y)
 
 X, y = dataset
 print("Total dataset: ", X.shape, y.shape)
