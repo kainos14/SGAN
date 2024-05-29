@@ -27,11 +27,15 @@ If our project is helpful for your research, please consider citing :
 
 ```
 
-@inJournal{XXX,
+@article{yi2024jsen,
   title={A Data-driven Feature Extraction Method Based on Data Supplement for Human Activity Recognition},
-  author={Myung-Kyu Yi and Seong-Oun Hwang},
-  booktitle={IEEE XXX},
-  year={2023}
+  author={Myung-Kyu Yi and Seong Oun Hwang},
+  journal={IEEE Sensor Journal},
+  volume={},
+  number={},
+  pages={},
+  year={2024}
+  publisher={IEEE}
 }
 
 ```
