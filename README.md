@@ -2,8 +2,8 @@
 
 
 >**This is the official implementation of the paper with the title “A Data-driven Feature Extraction Method Based on Data Supplement for Human Activity Recognition”by Myung-Kyu Yi and Seong-Oun Hwang.**
-> https://ieeexplore.ieee.org/document/10547639
-> DOI: 10.1109/JSEN.2024.3406727
+- https://ieeexplore.ieee.org/document/10547639
+- DOI: 10.1109/JSEN.2024.3406727
 
 ## Paper Overview
 
