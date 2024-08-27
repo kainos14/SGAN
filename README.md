@@ -44,4 +44,4 @@ If our project is helpful for your research, please consider citing :
 
 ## Contact
 
-Please feel free to contact via email (<kainos@gachon.ac.kr>) if you have further questions.
+Please feel free to contact via email (<kainos14@hanyang.ac.kr>) if you have further questions.
